@@ -28,6 +28,14 @@ module CommentProcessor
 private
 
   def self.reestablish_prunings(post, tree)
+    # The site administrator can manually remove comments by settingt the "prune" attribute to
+    # either "self" or "subtree". This script fully recreates the comment tree, and we want to
+    # preserve those "prune" attributes through the refresh.
+    #
+    # By the time the existing blog data arrives, the data transformer has already removed comment
+    # nodes with "prune" attributes; however, it tracks the removed comments in the "prunings" attr
+    # of the parent post.
+
     tree.all_statuses.each do |status|
       status.prune ||= post.prunings[status.id]
     end
